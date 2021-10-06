@@ -57,7 +57,7 @@ GLFWwindow* window;
 // The current size of our window in pixels
 glm::ivec2 windowSize = glm::ivec2(800, 800);
 // The title of our GLFW window
-std::string windowTitle = "INFR-1350U";
+std::string windowTitle = "TianTianFan - 100706787";
 
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -160,10 +160,10 @@ int main() {
 
 	static const float interleaved[] = {
 		// X      Y    Z       R     G     B
-		 0.5f, -0.5f, 0.5f,   0.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f, 0.5f,   0.3f, 0.2f, 0.5f,
-		-0.5f,  0.5f, 0.5f,   1.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f,   1.0f, 1.0f, 1.0f
+		 0.2f, -0.8f, 0.2f,   0.0f, 0.0f, 0.0f,
+		 0.2f,  0.2f, 0.2f,   0.3f, 0.2f, 0.5f,
+		-0.8f,  0.2f, 0.2f,   1.0f, 1.0f, 0.0f,
+		-0.8f, -0.8f, 0.2f,   1.0f, 1.0f, 1.0f
 	};
 	VertexBuffer::Sptr interleaved_vbo = VertexBuffer::Create();
 	interleaved_vbo->LoadData(interleaved, 6 * 4);
@@ -204,10 +204,12 @@ int main() {
 
 	// Get uniform location for the model view projection
 	GLint xTransformLoc = glGetUniformLocation(shader->GetHandle(), "u_ModelViewProjection");
-	GLint xTransformLoc1 = glGetUniformLocation(shader->GetHandle(), "u_ModelViewProjection");
+	GLint xTransformLoc1 = glGetUniformLocation(shader->GetHandle(), "u_ModelViewProjection"); 
+	GLint xTransformLoc2 = glGetUniformLocation(shader->GetHandle(), "u_ModelViewProjection");
 	// Create a mat4 to store our mvp (for now)
 	glm::mat4 transform = glm::mat4(1.0f);
-	glm::mat4 transform1 = glm::mat4(1.0f);
+	glm::mat4 transform1 = glm::mat4(1.0f); 
+	glm::mat4 transform2 = glm::mat4(1.0f);
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
 
@@ -222,6 +224,7 @@ int main() {
 		// Rotate our models around the z axis
 		transform = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1));
 		transform1 = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(1, 0, 0));
+		transform2 = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 1, 0));
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -233,6 +236,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		vao->Unbind();
 
+		glProgramUniformMatrix4fv(shader->GetHandle(), xTransformLoc2, 1, false, glm::value_ptr(transform2));
 		vao2->Bind();
 		glDrawElements(GL_TRIANGLES, interleaved_ibo->GetElementCount(), (GLenum)interleaved_ibo->GetElementType(), nullptr);
 		vao2->Unbind();
